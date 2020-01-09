@@ -1,6 +1,7 @@
 package com.zzq.controller;
 
 import com.zzq.util.PageStatic;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class HtmlController {
 
+    @Autowired
+    private PageStatic pageStatic;
+
     @RequestMapping("/getDetile")
     public String getDetile(String title , String content , Model model){
         model.addAttribute("title", title);
@@ -25,7 +29,7 @@ public class HtmlController {
     @RequestMapping("/toStatic")
     @ResponseBody
     public String toStatic(){
-        PageStatic.main(new String[]{});
+        pageStatic.staticMethod();
         return "ok";
     }
 

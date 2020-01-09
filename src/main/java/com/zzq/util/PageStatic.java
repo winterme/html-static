@@ -1,5 +1,8 @@
 package com.zzq.util;
 
+import com.zzq.config.IndexSch;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -13,9 +16,13 @@ import java.util.*;
  * @Description: TODO
  * @date 2020/1/9 15:19
  */
+@Configuration
 public class PageStatic {
 
-    public static void main(String[] args) {
+    @Autowired
+    private IndexSch indexSch;
+
+    public void staticMethod(){
         RestTemplate template = new RestTemplate();
 
         ArrayList<Map<String,String>> list = new ArrayList<>();
@@ -28,13 +35,10 @@ public class PageStatic {
 
             ResponseEntity<String> entity = template.getForEntity("http://localhost:8089/getDetile?title=" + map.keySet().iterator().next() + "&content=" + map.get(map.keySet().iterator().next()), String.class);
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-
             URL url = PageStatic.class.getResource("/");
             String p1 = url.getFile();
-//            String path = PageStatic.class.getResource("/")+"/"+calendar.get(Calendar.YEAR)+"/"+(calendar.get(Calendar.MONTH)+1)+"/"+calendar.get(Calendar.DAY_OF_MONTH)+"/"+UUID.randomUUID().toString()+".html";
-            String path = p1+"/static/"+calendar.get(Calendar.YEAR)+"/"+(calendar.get(Calendar.MONTH)+1)+"/"+calendar.get(Calendar.DAY_OF_MONTH)+"/"+UUID.randomUUID().toString()+".html";
+
+            String path = p1+"/static/"+getTimeF()+indexSch.index.getAndIncrement()+".html";
 
             File f = new File(path);
             if(!f.getParentFile().exists()){
@@ -52,9 +56,13 @@ public class PageStatic {
             }
 
         }
+    }
 
+    public String getTimeF(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
 
-
+        return calendar.get(Calendar.YEAR)+"/"+(calendar.get(Calendar.MONTH)+1)+"/"+calendar.get(Calendar.DAY_OF_MONTH)+"/";
     }
 
 }
